@@ -27,4 +27,16 @@
     <string name="description">Description</string>
     <string name="next">Next</string>
     <string name="adding_members">Adding members</string>
+    <string name="title_activity_note">NoteActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="_0">0</string>
+    <string name="link">Link</string>
+    <string name="message">Message</string>
+    <string name="you">You:</string>
+    <string name="enter_your_message">Enter your message</string>
+    <string name="d">d</string>
+    <string name="date">Date</string>
+    <string name="action">action</string>
+    <string name="type">Type</string>
+    <string name="notes_editor">NOTES EDITOR</string>
 </resources>

@@ -37,21 +37,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
 public class RegistrationActivity extends AppCompatActivity {
-    EditText mailET;
-    EditText loginET;
-    TextInputEditText passwordET;
-    Button completeButton;
-    ImageView picture;
+    private EditText mailET;
+    private EditText loginET;
+    private TextInputEditText passwordET;
+    private Button completeButton;
+    private ImageView picture;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private StorageReference mStorageRef;
-
+    private Bitmap selectedImage;
     private Uri imageUri;
 
     @Override
@@ -73,6 +77,7 @@ public class RegistrationActivity extends AppCompatActivity {
         passwordET = (TextInputEditText) findViewById(R.id.activityRegistration_editTextPassword);
         completeButton = (Button) findViewById(R.id.activityRegistration_buttonComplete);
         picture = (ImageView) findViewById(R.id.activityRegistration_imageView);
+        picture.setImageResource(R.drawable.icons_camera);
     }
 
     private void initListeners() {
@@ -160,9 +165,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        if (imageUri != null) {
-                                                            loadImage();
-                                                        }
+                                                        loadImage();
                                                     }
                                                 });
                                     }
@@ -189,8 +192,17 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadImage(){
-        mStorageRef.child("profile_photo/" + mAuth.getCurrentUser().getUid()).putFile(imageUri)
+    private void loadImage() {
+        if (imageUri == null) {
+            return;
+        }
+
+        Bitmap bitmap = getResizedBitmap(selectedImage, 400);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] arr = baos.toByteArray();
+
+        mStorageRef.child("profile_photo/" + mAuth.getCurrentUser().getUid()).putBytes(arr)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -234,13 +246,11 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
-
-
         if (resultCode == RESULT_OK) {
             try {
                 imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                selectedImage = BitmapFactory.decodeStream(imageStream);
                 picture.setImageBitmap(selectedImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -249,5 +259,21 @@ public class RegistrationActivity extends AppCompatActivity {
         } else {
             Toast.makeText(RegistrationActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

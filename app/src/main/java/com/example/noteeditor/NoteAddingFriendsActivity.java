@@ -23,12 +23,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
 public class NoteAddingFriendsActivity extends AppCompatActivity {
-    Button addButton;
-    ListView friendsLV;
-    FirebaseDatabase fDB;
-    CheckableFriendsAdapter adapter;
-    ArrayList<CheckableFriend> friends;
+    private FirebaseDatabase fDB;
+    private CheckableFriendsAdapter adapter;
+    private ArrayList<CheckableFriend> friends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +44,8 @@ public class NoteAddingFriendsActivity extends AppCompatActivity {
         Toast.makeText(NoteAddingFriendsActivity.this,
                 "Note created! You can add participants.", Toast.LENGTH_LONG).show();
 
-        addButton = (Button) findViewById(R.id.noteAddingFriends_buttonAdd);
-        friendsLV = (ListView) findViewById(R.id.noteAddingFriends_listView);
+        Button addButton = (Button) findViewById(R.id.noteAddingFriends_buttonAdd);
+        ListView friendsLV = (ListView) findViewById(R.id.noteAddingFriends_listView);
         friends = new ArrayList<>();
         adapter = new CheckableFriendsAdapter(NoteAddingFriendsActivity.this, friends);
         friendsLV.setAdapter(adapter);
@@ -63,7 +62,7 @@ public class NoteAddingFriendsActivity extends AppCompatActivity {
     private void finishAdding(String noteID) {
         for (CheckableFriend f : friends) {
             if (f.isChecked) {
-                fDB.getReference("members/" + noteID + "/" + f.uid).setValue(true);
+                fDB.getReference("members/" + noteID + "/" + f.uid).setValue(false);
             }
         }
 

@@ -15,8 +15,6 @@ public class PreAuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pre_auth);
         getSupportActionBar().hide();
 
-//        Intent intent = new Intent(PreAuthActivity.this, LoginActivity.class);
-//        startActivityForResult(intent, Constants.REQUEST_EXIT);
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             Intent intent = new Intent(PreAuthActivity.this, MainActivity.class);
             startActivityForResult(intent, Constants.REQUEST_EXIT);

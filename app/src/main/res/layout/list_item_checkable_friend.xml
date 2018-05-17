@@ -6,12 +6,11 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:padding="2dp"
-        app:srcCompat="@drawable/icon_user" />
+        android:padding="2dp" />
 
 
     <RelativeLayout

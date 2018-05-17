@@ -1,21 +1,25 @@
 package com.example.noteeditor.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.noteeditor.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-
-/**
- * Created by Динар on 12.05.2018.
- */
 
 public class CheckableFriendsAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
@@ -50,6 +54,8 @@ public class CheckableFriendsAdapter extends BaseAdapter {
             view = lInflater.inflate(R.layout.list_item_checkable_friend, parent, false);
         }
 
+        final ImageView photoIV = view.findViewById(R.id.imageView);
+        photoIV.setImageResource(R.drawable.icon_user);
         CheckableFriend p = getFriend(position);
 
         ((TextView) view.findViewById(R.id.textPersonLogin)).setText(p.login);
@@ -59,6 +65,22 @@ public class CheckableFriendsAdapter extends BaseAdapter {
         checkBox.setOnCheckedChangeListener(myCheckChangeList);
         checkBox.setTag(position);
         checkBox.setChecked(false);
+
+        final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        final File localFile;
+        try {
+            localFile = File.createTempFile(p.uid, "jpg");
+
+            mStorageRef.child("profile_photo/" + p.uid).getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            photoIV.setImageURI(Uri.fromFile(localFile));
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

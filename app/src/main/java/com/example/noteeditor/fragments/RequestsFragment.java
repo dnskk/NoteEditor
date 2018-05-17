@@ -28,9 +28,9 @@ import java.util.Map;
 
 public class RequestsFragment extends ListFragment {
     TabChange delegate;
-    FirebaseAuth mAuth;
-    RequestPersonAdapter adapter;
-    ArrayList<Person> persons;
+    private FirebaseAuth mAuth;
+    private RequestPersonAdapter adapter;
+    private ArrayList<Person> persons;
 
     public RequestsFragment() {
         // Required empty public constructor
@@ -99,5 +99,4 @@ public class RequestsFragment extends ListFragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_requests, container, false);
     }
-
 }

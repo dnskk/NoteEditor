@@ -1,25 +1,22 @@
 package com.example.noteeditor.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
-import com.example.noteeditor.FriendsSearchActivity;
+import com.example.noteeditor.CurrentNoteActivity;
 import com.example.noteeditor.NoteCreatingActivity;
 import com.example.noteeditor.R;
+import com.example.noteeditor.ResolvedNoteActivity;
 import com.example.noteeditor.adapters.Note;
 import com.example.noteeditor.adapters.NotesAdapter;
-import com.example.noteeditor.adapters.Person;
-import com.example.noteeditor.adapters.PersonAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,16 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 
 public class NotesFragment extends ListFragment {
-    FirebaseAuth mAuth;
-    NotesAdapter adapter;
-    ArrayList<Note> notes;
-    FirebaseDatabase fDB;
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase fDB;
+    private NotesAdapter adapter;
+    private ArrayList<Note> notes;
 
     public NotesFragment() {
         // Required empty public constructor
@@ -62,10 +56,37 @@ public class NotesFragment extends ListFragment {
         });
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        final Note n = (Note) adapter.getItem(position);
+        fDB.getReference("notes/" + n.noteID + "/isActive").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isActive = (boolean) dataSnapshot.getValue();
+                if (isActive) {
+                    Intent intent = new Intent(getActivity(), CurrentNoteActivity.class);
+                    intent.putExtra("noteID", n.noteID);
+                    startActivity(intent);
+                } else {
+
+                    Intent intent = new Intent(getActivity(), ResolvedNoteActivity.class);
+                    intent.putExtra("noteID", n.noteID);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     private void loadNotes() {
         DatabaseReference dbRef = fDB.getReference("members");
         String uid = mAuth.getCurrentUser().getUid();
-        Query q = dbRef.orderByChild(uid).startAt(true);
+        Query q = dbRef.orderByChild(uid);
         q.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -74,7 +95,7 @@ public class NotesFragment extends ListFragment {
                 setListAdapter(adapter);
 
                 HashMap<String, Object> myNotes = (HashMap<String, Object>) dataSnapshot.getValue();
-                if(myNotes==null){
+                if (myNotes == null) {
                     return;
                 }
 
@@ -95,8 +116,9 @@ public class NotesFragment extends ListFragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String title = dataSnapshot.child("title").getValue().toString();
+                String description = dataSnapshot.child("description").getValue().toString();
                 boolean isActive = (boolean) dataSnapshot.child("isActive").getValue();
-                Note note = new Note(noteID, title, isActive);
+                Note note = new Note(noteID, title, description, isActive);
                 notes.add(note);
                 adapter.notifyDataSetChanged();
             }

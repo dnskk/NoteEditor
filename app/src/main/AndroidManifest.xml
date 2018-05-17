@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.noteeditor">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +29,12 @@
         <activity android:name=".FriendsSearchActivity" />
         <activity android:name=".NoteCreatingActivity" />
         <activity android:name=".NoteAddingFriendsActivity" />
-        <activity android:name=".CurrentNoteActivity"></activity>
+        <activity
+            android:name=".CurrentNoteActivity"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".VariantCreatingActivity" />
+        <activity android:name=".CurrentVariantActivity" />
+        <activity android:name=".ResolvedNoteActivity"></activity>
     </application>
 
 </manifest>

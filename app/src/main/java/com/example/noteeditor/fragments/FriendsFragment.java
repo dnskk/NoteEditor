@@ -44,7 +44,6 @@ public class FriendsFragment extends Fragment implements TabChange {
         tab.setText("Requests (" + n + ")");
     }
 
-
     public void decrementRequests() {
         TabLayout.Tab tab = tabLayout.getTabAt(1);
         String title = tab.getText().toString();
@@ -52,7 +51,6 @@ public class FriendsFragment extends Fragment implements TabChange {
             tab.setText("Requests");
             return;
         }
-
 
         String str = title.substring(10, title.length() - 1);
         int n = Integer.parseInt(str) - 1;

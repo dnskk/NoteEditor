@@ -22,7 +22,6 @@ import java.util.Map;
 
 
 public class AllFriendsFragment extends ListFragment {
-    FirebaseAuth mAuth;
     PersonAdapter adapter;
     ArrayList<Person> friends;
 
@@ -33,12 +32,11 @@ public class AllFriendsFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
         loadFriends();
     }
 
     private void loadFriends() {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference friendsRef = database.getReference("friends/" + user.getUid());
@@ -75,6 +73,7 @@ public class AllFriendsFragment extends ListFragment {
                 String email = (String) dataSnapshot.child("email").getValue();
                 Person p = new Person(login, email);
                 p.uid = uid;
+
                 friends.add(p);
                 adapter.notifyDataSetChanged();
             }

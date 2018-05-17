@@ -20,11 +20,12 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
+
 public class LoginActivity extends AppCompatActivity {
-    TextInputEditText passwordET;
-    EditText mailET;
-    TextView registrationTV;
-    Button enterButton;
+    private TextInputEditText passwordET;
+    private EditText mailET;
+    private TextView registrationTV;
+    private Button enterButton;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -94,7 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // TODO: authentication.
                 mAuth.signInWithEmailAndPassword(mail, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override

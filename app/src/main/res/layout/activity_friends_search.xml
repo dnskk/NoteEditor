@@ -68,5 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activityFriendsSearch_buttonComplete" />
+        app:layout_constraintTop_toBottomOf="@+id/activityFriendsSearch_buttonComplete"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="4sp" />
 </android.support.constraint.ConstraintLayout>

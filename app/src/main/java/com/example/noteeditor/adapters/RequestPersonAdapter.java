@@ -2,6 +2,7 @@ package com.example.noteeditor.adapters;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,16 @@ import android.widget.ToggleButton;
 
 import com.example.noteeditor.R;
 import com.example.noteeditor.TabChange;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RequestPersonAdapter extends BaseAdapter {
@@ -58,6 +65,8 @@ public class RequestPersonAdapter extends BaseAdapter {
             view = lInflater.inflate(R.layout.list_item_request_person, parent, false);
         }
 
+        final ImageView photoIV = view.findViewById(R.id.imageView);
+        photoIV.setImageResource(R.drawable.icon_user);
         final Person p = getPerson(position);
 
         ((TextView) view.findViewById(R.id.textPersonLogin)).setText(p.login);
@@ -80,6 +89,22 @@ public class RequestPersonAdapter extends BaseAdapter {
                 delegate.decrementRequests();
             }
         });
+
+        final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        final File localFile;
+        try {
+            localFile = File.createTempFile(p.uid, "jpg");
+
+            mStorageRef.child("profile_photo/" + p.uid).getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            photoIV.setImageURI(Uri.fromFile(localFile));
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

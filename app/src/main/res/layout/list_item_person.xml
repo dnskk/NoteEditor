@@ -3,22 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:weightSum="1">
+    android:orientation="horizontal">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
+        android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_weight="0.2"
-        android:padding="2dp"
-        app:srcCompat="@drawable/icon_user" />
+        android:padding="2dp" />
 
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_weight="0.7">
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
 
         <TextView
             android:id="@+id/textPersonLogin"
@@ -27,6 +23,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/login"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -37,6 +34,7 @@
             android:layout_below="@+id/textPersonLogin"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/mail"/>
     </RelativeLayout>
 </LinearLayout>

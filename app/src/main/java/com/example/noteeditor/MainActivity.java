@@ -2,6 +2,7 @@ package com.example.noteeditor;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.example.noteeditor.fragments.FriendsFragment;
 import com.example.noteeditor.fragments.AllFriendsFragment;
 import com.example.noteeditor.fragments.NotesFragment;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,9 +33,10 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    Toolbar toolbar;
+    private Toolbar toolbar;
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
 
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_sign_out) {
             mAuth.signOut();
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, Constants.REQUEST_EXIT);
         }
 
@@ -124,14 +127,14 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void updateHeader(){
+    private void updateHeader() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
 
         TextView tvLogin = headerView.findViewById(R.id.header_textViewLogin);
         TextView tvEmail = headerView.findViewById(R.id.header_textViewMail);
         final ImageView ivPhoto = headerView.findViewById(R.id.header_imageView);
-        FirebaseUser user= mAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
         tvLogin.setText(user.getDisplayName());
         tvEmail.setText(user.getEmail());
 
@@ -140,14 +143,14 @@ public class MainActivity extends AppCompatActivity
             final File localFile = File.createTempFile(myUid, "jpg");
             mStorageRef.child("profile_photo/" + myUid).getFile(localFile)
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            ivPhoto.setImageURI(Uri.fromFile(localFile));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    ivPhoto.setImageURI(Uri.fromFile(localFile));
-//                    Bitmap bitmap = BitmapHelper.getBitmapFromFile(localFile);
-//                    bitmap = BitmapHelper.getResizedBitmap(bitmap,60,60);
-//                    bitmap = BitmapHelper.getRoundedCornerBitmap(bitmap);
-//                    ivPhoto.setImageBitmap(null);
-//                    ivPhoto.setImageBitmap(bitmap);
+                public void onFailure(@NonNull Exception e) {
+                    ivPhoto.setImageResource(R.drawable.icon_user);
                 }
             });
         } catch (IOException e) {

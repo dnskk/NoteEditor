@@ -52,6 +52,7 @@ public class NotesAdapter extends BaseAdapter {
         // заполняем View в пункте списка данными из товаров: наименование, цена
         // и картинка
         ((TextView) view.findViewById(R.id.textNoteTitle)).setText(n.name);
+        ((TextView) view.findViewById(R.id.textDescription)).setText(n.description);
         TextView tv = view.findViewById(R.id.textNoteCondition);
         if (n.isActive) {
             tv.setText("Active");

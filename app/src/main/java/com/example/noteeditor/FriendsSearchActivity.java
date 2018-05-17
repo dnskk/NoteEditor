@@ -30,15 +30,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class FriendsSearchActivity extends AppCompatActivity {
-    EditText loginET;
-    Button findButton;
-    ListView personsLV;
-    FirebaseDatabase fDB;
-    SearchPersonAdapter adapter;
-    ArrayList<Person> persons;
-    ArrayList<String> friends;
 
+public class FriendsSearchActivity extends AppCompatActivity {
+    private EditText loginET;
+    private Button findButton;
+    private ListView personsLV;
+    private FirebaseDatabase fDB;
+    private SearchPersonAdapter adapter;
+    private ArrayList<Person> persons;
+    private ArrayList<String> friends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
